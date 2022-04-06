@@ -1,0 +1,39 @@
+CREATE TABLE Asian_Dramas (id INTEGER PRIMARY KEY, drama_name TEXT, country TEXT, year INTEGER, type TEXT, episode_count INTEGER, status TEXT); 
+
+
+INSERT INTO Asian_Dramas VALUES 
+
+(1,"49 Days With a Merman", "Taiwan", 2022, 14, "Drama", "Watching"),
+(2,"Cutie Pie", "Thailand", 2022, 12, "Drama", "Watching"),
+(3,"Hello, the Sharpshooter", "China", 2022, 40, "Drama", "Watching"),
+(4,"If Voice Has Memory", "China", 2021, 32, "Drama", "Watching"),
+(5,"In Your Heart", "China", 2022, 8, "Drama", "Watching"),
+(6,"Now, We Are Breaking UP", "Sount Korea", 2022, 16, "Drama", "Watching"),
+(7,"Semantic Error", "South Korea", 2022, 8, "Drama", "Watching"),
+(8,"Switch On", "Thailand", 2021, 24, "Drama", "Watching"),
+(9,"You're My Sky", "Thailand", 2022, 12, "Drama", "Watching"),
+(10,"24/7 in love", "Philippines", 2012, 1, "Movie", "Watching"),
+(11,"100 Days with Mr. Arrogant", "South Korea", 2004, 1, "Movie", "Watching"),
+(12,"After-School Starlight", "Japan", 2019, 1, "Movie", "Watching"),
+(13,"Beauty and the Bestie", "Philippines", 2015, 1, "Movie", "Watching"),
+(14,"Ani ni Aisaresugite Komattemasu", "Japan", 2017, 5, "Drama", "Watching"),
+(15,"Asuko March!", "Japan", 2011, 9, "Drama", "Watching"),
+(16,"Moon River", "Taiwan", 2009, 13, "Drama", "Watching"),
+(17,"Cheat", "Philippines", 2020, 6, "Drama", "Watching");
+
+SELECT * FROM Asian_Dramas;
+
+UPDATE Asian_Dramas SET status = "Completed" WHERE id = 10;
+UPDATE Asian_Dramas SET status = "Completed" WHERE id = 11;
+UPDATE Asian_Dramas SET status = "Completed" WHERE id = 12;
+UPDATE Asian_Dramas SET status = "Completed" WHERE id = 13;
+UPDATE Asian_Dramas SET status = "Completed" WHERE id = 14;
+UPDATE Asian_Dramas SET status = "Completed" WHERE id = 15;
+UPDATE Asian_Dramas SET status = "Completed" WHERE id = 16;
+UPDATE Asian_Dramas SET status = "Completed" WHERE id = 17;
+
+SELECT * FROM Asian_Dramas;
+
+DELETe FROM Asian_Dramas WHERE id = 17;
+
+SELECT * FROM Asian_Dramas;
