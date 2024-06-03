@@ -1,0 +1,67 @@
+--This query includes conditions like high transaction amounts, unusually frequent transactions, and presence of fraud disputes to determine which merchant acouunts are at a high risk of being fraudulent. 
+
+SELECT M.id
+FROM Merchants M
+JOIN Transactions T ON M.id = T.merchant_id
+LEFT JOIN Disputes D ON T.dispute_id = D.id
+-- High transaction amounts 
+WHERE T.amount > 1000 OR
+-- Unusually frequent transactions
+	(SELECT COUNT(*)
+	FROM Transactions T2
+	WHERE T2.merchant_id = M.id
+		AND T2.created >= CURRENT_TIMESTAMP - INTERVAL '7 days'
+	) > 50 OR
+-- Presence of confirmed fraud dispute
+	D.type = 'fraudulent'
+ORDER BY M.id;
+	
+--This query uses the CASE statements within the COUNT functions to count both rejected and non-rejected merchants based on their account state within a 4-week period. 
+
+SELECT
+    M.country,
+    COUNT(DISTINCT CASE WHEN M.account_state = 'rejected' THEN M.id END) AS rejected_merchants,
+    COUNT(DISTINCT CASE WHEN M.account_state <> 'rejected' THEN M.id END) AS non_rejected_merchants
+FROM
+    Merchants M
+WHERE
+    M.created >= CURRENT_TIMESTAMP - INTERVAL '4 weeks'
+GROUP BY
+    M.country
+ORDER BY
+    M.country;
+	
+
+--The weekly_signups Common Table Expression (CTE) calculates the weekly sign-up count.The main query selects the week start date, weekly sign-up count, and the previous week's sign-up count using the LAG window function.  
+--It calculates the trend by comparing the current week's sign-ups with 1.5 times the previous week's sign-ups. If the current week has a spike, it's labeled as 'Spiked,' otherwise 'Normal.'
+
+
+WITH weekly_signups AS (
+    SELECT
+        DATE_TRUNC('week', M.created) AS signup_week,
+        COUNT(DISTINCT M.id) AS weekly_signups_count
+    FROM
+        Merchants M
+    WHERE
+        EXTRACT(YEAR FROM M.created) = EXTRACT(YEAR FROM CURRENT_DATE)
+    GROUP BY
+        signup_week
+)
+
+SELECT
+    TO_CHAR(ws.signup_week, 'YYYY-MM-DD') AS week_start_date,
+    ws.weekly_signups_count,
+    LAG(ws.weekly_signups_count) OVER (PARTITION BY ws.signup_week ORDER BY ws.signup_week) AS previous_week_signups_count,
+    CASE
+        WHEN ws.weekly_signups_count > 1.5 * COALESCE(LAG(ws.weekly_signups_count) OVER (PARTITION BY ws.signup_week ORDER BY ws.signup_week), 0)
+        THEN 'Spiked'
+        ELSE 'Normal'
+    END AS signup_trend
+FROM
+    weekly_signups ws
+ORDER BY
+    ws.signup_week;
+
+
+
+
